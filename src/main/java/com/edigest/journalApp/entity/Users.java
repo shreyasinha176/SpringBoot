@@ -12,6 +12,7 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@NoArgsConstructor
 public class Users {
     @Id
     private ObjectId id;
