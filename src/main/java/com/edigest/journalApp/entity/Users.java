@@ -10,9 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "users")
 @Data
-@NoArgsConstructor
 public class Users {
     @Id
     private ObjectId id;
@@ -23,4 +21,5 @@ public class Users {
     private String password;
     @DBRef
     private List<JournalEntry> journalEntries= new ArrayList<>();
+    private List<String> roles;
 }
