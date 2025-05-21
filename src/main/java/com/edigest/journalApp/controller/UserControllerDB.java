@@ -31,13 +31,11 @@ public class UserControllerDB {
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody Users user){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = user.getUserName();
+        String userName = authentication.getName();
         Users userinDB= userService.findByUserName(userName);
-         if(userinDB!=null){
             userinDB.setUserName(user.getUserName());
             userinDB.setPassword(user.getPassword());
-            userService.saveEntry(userinDB);
-        }
+            userService.saveNewUser(userinDB);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @DeleteMapping

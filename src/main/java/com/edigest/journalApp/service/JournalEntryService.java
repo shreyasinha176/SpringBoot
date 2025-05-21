@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class JournalEntryService {
+public class  JournalEntryService {
 
     @Autowired
     private JournalEntryRepository journalEntryRepository;
@@ -27,7 +27,7 @@ public class JournalEntryService {
             Users user = userService.findByUserName(userName);
             JournalEntry saved = journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(saved);//in memory
-            userService.saveEntry(user);//in user
+            userService.saveNewEntry(user);//in user
         }
         catch(Exception e){
             System.out.println(e);
@@ -43,7 +43,21 @@ public class JournalEntryService {
     public Optional<JournalEntry> findById(ObjectId id){
         return journalEntryRepository.findById(id);
     }
-    public void deleteById(ObjectId id){
-        journalEntryRepository.deleteById(id);
+
+    @Transactional
+    public boolean deleteById(ObjectId id, String userName) {
+        boolean removed= false;
+        try {
+            Users user = userService.findByUserName(userName);
+              removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
+            if (removed) {
+                userService.saveNewUser(user);
+                journalEntryRepository.deleteById(id);
+            }
+        }catch(Exception e){
+            System.out.println(e);
+            throw new RuntimeException("An error occurred while deleting the entry",e);
+        }
+        return removed;
     }
 }
